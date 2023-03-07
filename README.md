@@ -1,2 +1,2 @@
 # NLP-Question_Answering
-bert.py: Apply BERT model
+bert_model.py: Apply BERT model
