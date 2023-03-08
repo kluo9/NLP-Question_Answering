@@ -194,7 +194,7 @@ def evaluate(data, output):
 
 # Training
 
-num_epoch = 1
+num_epoch = 2
 validation = True
 logging_step = 100
 learning_rate = 1e-4
