@@ -10,6 +10,12 @@ from tqdm.auto import tqdm
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
+model_name = 'Bert_base'
+num_epoch = 2
+data_dir = "/home/bulllab/kluo/DL/Question_Answer/data"
+model_save_dir = f"/home/bulllab/kluo/DL/Question_Answer/code/{model_name}"
+result_dir = "/home/bulllab/kluo/DL/Question_Answer/results"
+
 
 # Fix random seed for reproducibility
 def same_seeds(seed):
@@ -26,10 +32,10 @@ def same_seeds(seed):
 same_seeds(0)
 
 # Change "fp16_training" to True to support automatic mixed precision training (fp16)
-fp16_training = False
+fp16_training = True
 
 if fp16_training:
-    accelerator = Accelerator(fp16=True)
+    accelerator = Accelerator(mixed_precision='fp16')
     device = accelerator.device
 
 # Load Model and Tokenizer
@@ -45,9 +51,9 @@ def read_data(file):
     return data["questions"], data["paragraphs"]
 
 
-train_questions, train_paragraphs = read_data("/Users/kexinluo/Downloads/ml2022spring-hw7/hw7_train.json")
-dev_questions, dev_paragraphs = read_data("/Users/kexinluo/Downloads/ml2022spring-hw7/hw7_dev.json")
-test_questions, test_paragraphs = read_data("/Users/kexinluo/Downloads/ml2022spring-hw7/hw7_test.json")
+train_questions, train_paragraphs = read_data(f"{data_dir}/hw7_train.json")
+dev_questions, dev_paragraphs = read_data(f"{data_dir}//hw7_dev.json")
+test_questions, test_paragraphs = read_data(f"{data_dir}/hw7_test.json")
 
 # Tokenize Data
 
@@ -194,7 +200,6 @@ def evaluate(data, output):
 
 # Training
 
-num_epoch = 2
 validation = True
 logging_step = 100
 learning_rate = 1e-4
@@ -263,7 +268,7 @@ for epoch in range(num_epoch):
 # i.e. there are two files under the direcory 「saved_model」: 「pytorch_model.bin」 and 「config.json」
 # Saved model can be re-loaded using 「model = BertForQuestionAnswering.from_pretrained("saved_model")」
 print("Saving Model ...")
-model_save_dir = "saved_model"
+
 model.save_pretrained(model_save_dir)
 
 # Testing
@@ -279,7 +284,7 @@ with torch.no_grad():
                        attention_mask=data[2].squeeze(dim=0).to(device))
         result.append(evaluate(data, output))
 
-result_file = "result.csv"
+result_file = f"{result_dir}/{model_name}_result.csv"
 with open(result_file, 'w') as f:
     f.write("ID,Answer\n")
     for i, test_question in enumerate(test_questions):
