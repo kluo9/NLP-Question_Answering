@@ -12,9 +12,10 @@ device = "cuda" if torch.cuda.is_available() else "cpu"
 
 model_name = 'Bert_base'
 num_epoch = 2
-data_dir = "/home/bulllab/kluo/DL/Question_Answer/data"
-model_save_dir = f"/home/bulllab/kluo/DL/Question_Answer/code/{model_name}"
-result_dir = "/home/bulllab/kluo/DL/Question_Answer/results"
+project = "~/Question_Answer"
+data_dir = f"{project}/data"
+model_save_dir = f"{project}/code/{model_name}"
+result_dir = f"{project}/results"
 
 
 # Fix random seed for reproducibility
