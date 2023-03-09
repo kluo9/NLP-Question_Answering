@@ -1,2 +1,4 @@
 # NLP-Question_Answering
-bert_model.py: Apply BERT model
+Chinese question answering language model
+
+- bert_model.py: Apply BERT-base model
