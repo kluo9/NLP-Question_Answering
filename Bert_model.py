@@ -4,7 +4,7 @@ import numpy as np
 import random
 import torch
 from torch.utils.data import DataLoader, Dataset
-from transformers import AdamW, BertForQuestionAnswering, BertTokenizerFast
+from transformers import AdamW, BertForQuestionAnswering, BertTokenizerFast, get_scheduler
 from accelerate import Accelerator
 from tqdm.auto import tqdm
 
@@ -12,7 +12,7 @@ device = "cuda" if torch.cuda.is_available() else "cpu"
 
 model_name = 'Bert_base'
 num_epoch = 2
-project = "~/Question_Answer"
+project = "/home/bulllab/kluo/DL/Question_Answer"
 data_dir = f"{project}/data"
 model_save_dir = f"{project}/code/{model_name}"
 result_dir = f"{project}/results"
@@ -206,6 +206,15 @@ logging_step = 100
 learning_rate = 1e-4
 optimizer = AdamW(model.parameters(), lr=learning_rate)
 
+# lr scheduler
+num_training_steps = num_epoch * len(train_loader)
+lr_scheduler = get_scheduler(
+    "linear",
+    optimizer=optimizer,
+    num_warmup_steps=0,
+    num_training_steps=num_training_steps,
+)
+
 if fp16_training:
     model, optimizer, train_loader = accelerator.prepare(model, optimizer, train_loader)
 
@@ -214,6 +223,7 @@ model.train()
 print("Start Training ...")
 
 for epoch in range(num_epoch):
+    print(f"Training epoch {epoch}")
     step = 1
     train_loss = train_acc = 0
 
@@ -240,10 +250,9 @@ for epoch in range(num_epoch):
             output.loss.backward()
 
         optimizer.step()
+        lr_scheduler.step()
         optimizer.zero_grad()
         step += 1
-
-        ##### TODO: Apply linear learning rate decay #####
 
         # Print training loss and accuracy over past logging step
         if step % logging_step == 0:
