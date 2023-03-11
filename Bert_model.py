@@ -173,9 +173,6 @@ test_loader = DataLoader(test_set, batch_size=1, shuffle=False, pin_memory=True)
 # Function for Evaluation
 
 def evaluate(data, output):
-    ##### TODO: Postprocessing #####
-    # There is a bug and room for improvement in postprocessing
-    # Hint: Open your prediction file to see what is wrong
 
     answer = ''
     max_prob = float('-inf')
