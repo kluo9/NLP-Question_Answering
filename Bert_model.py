@@ -57,7 +57,6 @@ dev_questions, dev_paragraphs = read_data(f"{data_dir}//hw7_dev.json")
 test_questions, test_paragraphs = read_data(f"{data_dir}/hw7_test.json")
 
 # Tokenize Data
-
 # Tokenize questions and paragraphs separately
 # 「add_special_tokens」 is set to False since special tokens will be added when tokenized questions and paragraphs are combined in datset __getitem__
 
