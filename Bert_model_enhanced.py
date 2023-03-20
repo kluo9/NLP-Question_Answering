@@ -1,3 +1,4 @@
+# This is a sample Python script.
 import json
 import numpy as np
 import random
@@ -83,7 +84,7 @@ class QA_Dataset(Dataset):
         self.max_paragraph_len = 150
 
         ##### TODO: Change value of doc_stride #####
-        self.doc_stride = 150
+        self.doc_stride = 100
 
         # Input sequence length = [CLS] + question + [SEP] + paragraph + [SEP]
         self.max_seq_len = 1 + self.max_question_len + 1 + self.max_paragraph_len + 1
@@ -201,6 +202,15 @@ logging_step = 100
 learning_rate = 1e-4
 optimizer = AdamW(model.parameters(), lr=learning_rate)
 
+# lr scheduler
+num_training_steps = num_epoch * len(train_loader)
+lr_scheduler = get_scheduler(
+    "linear",
+    optimizer=optimizer,
+    num_warmup_steps=0,
+    num_training_steps=num_training_steps,
+)
+
 if fp16_training:
     model, optimizer, train_loader = accelerator.prepare(model, optimizer, train_loader)
 
@@ -236,6 +246,7 @@ for epoch in range(num_epoch):
             output.loss.backward()
 
         optimizer.step()
+        lr_scheduler.step()
         optimizer.zero_grad()
         step += 1
 
