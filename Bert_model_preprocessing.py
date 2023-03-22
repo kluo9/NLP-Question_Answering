@@ -97,7 +97,6 @@ class QA_Dataset(Dataset):
         tokenized_paragraph = self.tokenized_paragraphs[question["paragraph_id"]]
 
         ##### TODO: Preprocessing #####
-        # Hint: How to prevent model from learning something it should not learn
 
         if self.split == "train":
             # Convert answer's start/end positions in paragraph_text to start/end positions in tokenized_paragraph
@@ -105,10 +104,14 @@ class QA_Dataset(Dataset):
             answer_end_token = tokenized_paragraph.char_to_token(question["answer_end"])
 
             # A single window is obtained by slicing the portion of paragraph containing the answer
+            '''
             mid = (answer_start_token + answer_end_token) // 2
             paragraph_start = max(0, min(mid - self.max_paragraph_len // 2,
                                          len(tokenized_paragraph) - self.max_paragraph_len))
             paragraph_end = paragraph_start + self.max_paragraph_len
+            '''
+            paragraph_start = random.randint(max(0, self.max_paragraph_len - answer_start_token), answer_start_token)
+            paragraph_end = min(paragraph_start + self.max_paragraph_len, len(tokenized_paragraph))
 
             # Slice question/paragraph and add special tokens (101: CLS, 102: SEP)
             input_ids_question = [101] + tokenized_question.ids[:self.max_question_len] + [102]
