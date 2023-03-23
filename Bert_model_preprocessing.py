@@ -110,7 +110,7 @@ class QA_Dataset(Dataset):
                                          len(tokenized_paragraph) - self.max_paragraph_len))
             paragraph_end = paragraph_start + self.max_paragraph_len
             '''
-            paragraph_start = random.randint(max(0, self.max_paragraph_len - answer_start_token), answer_start_token)
+            paragraph_start = random.randint(max(0, answer_end_token - self.max_paragraph_len), answer_start_token)
             paragraph_end = min(paragraph_start + self.max_paragraph_len, len(tokenized_paragraph))
 
             # Slice question/paragraph and add special tokens (101: CLS, 102: SEP)
