@@ -14,5 +14,5 @@ Add preprocessing to the training set so that the target
 (answer) is not always at the center of the paragraph.
 Other tricks like learning rate scheduler and adjusted doc-stride 
 in validation/testing are also applied.
-In the validation set, the accuracy is about 0.71.
+In the validation set, the accuracy is about 0.73.
 
